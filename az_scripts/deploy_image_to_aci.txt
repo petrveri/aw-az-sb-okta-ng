@@ -1,0 +1,40 @@
+# create a new resource group
+#$resourceGroup = "advwork01"
+#$location = "eastus"
+#az group create -n $resourceGroup -l $location
+
+# create a docker container using the awsdr image from acradvwork01
+# get the login server name
+$loginServer = az acr show -n $registryName --query loginServer --output tsv
+$dockerImageName="awsdr"
+$acrImageName=$loginServer+"/"+$dockerImageName+":latest"
+$containerGroupName = "acigroupawsdr01"
+$containerPort = "8080"
+$aciDns = "acidnsawsdr"
+
+$registryName = "acradvwork01"
+
+$registryUserPassword = az ad sp create-for-rbac --name http://$registryName-pull --scopes $(az acr show --name $registryName --query id --output tsv) --role acrpull --query password --output tsv
+$registryUserName = az ad sp show --id http://$registryName-pull --query appId --output tsv
+
+#Write-Host "registryUserName: $registryUserName"
+#Write-Host "registryUserPassword: $registryUserPassword"
+
+az container create -g $resourceGroup -n $containerGroupName --image $acrImageName --ports $containerPort --ip-address public --dns-name-label $aciDns --registry-username $registryUserName --registry-password $registryUserPassword
+
+# see details about this container
+az container show -g $resourceGroup -n $containerGroupName --output table
+az container show -g $resourceGroup -n $containerGroupName --output tsv --query ipAddress.ip
+
+$startIP="13.72.71.182"
+$endIP=$startIP
+
+echo "Configuring firewall..."
+az sql server firewall-rule create --resource-group $resourceGroup --server $server -n AllowYourIp --start-ip-address $startIP --end-ip-address $endIP
+
+az container restart -g $resourceGroup -n $containerGroupName
+
+# view the logs
+az container logs -n $containerGroupName -g $resourceGroup
+
+acidnsawsdr.eastus.azurecontainer.io:8080/api/saleslt/customers/6

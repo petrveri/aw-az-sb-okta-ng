@@ -1,0 +1,45 @@
+# create a new resource group
+#$resourceGroup = "advwork01"
+#$location = "eastus"
+#az group create -n $resourceGroup -l $location
+
+$acrName = az acr show -n $registryName --query name --output tsv
+$loginServer = az acr show -n $registryName --query loginServer --output tsv
+$dockerImageName="awsdr_jpa"
+$acrImageName=$loginServer+"/"+$dockerImageName+":latest"
+#$aksDnsPrefix = "advworksdns01"
+$aksname = "advworksaks01"
+
+az aks create --resource-group=$resourceGroup --name=$aksname --node-count 1 --generate-ssh-keys --attach-acr $acrName
+# --dns-name-prefix=$aksDnsPrefix
+
+az aks get-credentials --resource-group=$resourceGroup --name $aksname
+
+kubectl get nodes
+
+$deploymentName="awsdr-jpa"
+kubectl run $deploymentName --image=$acrImageName
+
+kubectl expose deployment $deploymentName --type=LoadBalancer --port=8080 --target-port=8080
+
+kubectl create clusterrolebinding kubernetes-dashboard -n kube-system --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard
+
+az aks browse --resource-group=$resourceGroup --name=$aksname
+
+kubectl get pods -n default
+
+52.170.166.70
+
+
+kubectl get services --namespace=default --name=$aksname
+kubectl get services --namespace=default --name="advworksaks01"
+52.170.160.169
+
+
+kubectl get service --output=jsonpath='{.items[*].status.loadBalancer.ingress[0].ip}' --namespace=default
+
+http://52.191.23.190:8080/api/saleslt/customers/29485
+http://52.191.23.190:8080/api/saleslt/customerswithaddress/29485
+http://52.191.23.190:8080/api/saleslt/customers/29485/addresses?jpql=false&nativeQuery=false
+
+kubectl get service --output=jsonpath='{.items[*].status.loadBalancer.ingress[0]}' --namespace=default

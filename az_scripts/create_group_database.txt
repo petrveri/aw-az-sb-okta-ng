@@ -1,0 +1,33 @@
+# Login:
+az login
+
+# Create a resource group
+$resourceGroup = "advwork01"
+$location = "eastus"
+az group create --name $resourceGroup --location $location
+
+$server = "mssqlser01"
+$login = "nachalnikadm"
+$password = "youNeverKnow395"
+$database = "AdventureWorksLT"
+
+$startIP="172.58.219.163"
+$endIP=$startIP
+
+# Write-Host "resourceGroup: $resourceGroup  location: $location"
+# Write-Host "login: $login  password: $password"
+# Write-Host "startIP: $startIP  endIP: $endIP"
+
+echo "Creating $server in $location..."
+az sql server create --name $server --resource-group $resourceGroup --location "$location" --admin-user $login --admin-password $password
+
+echo "Configuring firewall..."
+az sql server firewall-rule create --resource-group $resourceGroup --server $server -n AllowYourIp --start-ip-address $startIP --end-ip-address $endIP
+
+$startIP="52.170.166.70"
+$endIP=$startIP
+az sql server firewall-rule create --resource-group $resourceGroup --server $server -n AllowAnotherIp --start-ip-address $startIP --end-ip-address $endIP
+
+echo "Creating $database on $server..."
+# zone redundancy is only supported on premium and business critical service tiers
+az sql db create --resource-group $resourceGroup --server $server --name $database --sample-name AdventureWorksLT --edition Basic --zone-redundant false

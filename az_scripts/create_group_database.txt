@@ -11,7 +11,7 @@ $login = "nachalnikadm"
 $password = "youNeverKnow395"
 $database = "AdventureWorksLT"
 
-$startIP="172.58.219.163"
+$startIP="172.58.188.68"
 $endIP=$startIP
 
 # Write-Host "resourceGroup: $resourceGroup  location: $location"
@@ -31,3 +31,5 @@ az sql server firewall-rule create --resource-group $resourceGroup --server $ser
 echo "Creating $database on $server..."
 # zone redundancy is only supported on premium and business critical service tiers
 az sql db create --resource-group $resourceGroup --server $server --name $database --sample-name AdventureWorksLT --edition Basic --zone-redundant false
+
+http://52.191.19.106:8080/api/saleslt/customers/29485

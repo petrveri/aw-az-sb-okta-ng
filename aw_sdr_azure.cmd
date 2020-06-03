@@ -3,4 +3,4 @@ SET SQL_PORT=1433
 SET SQL_DBNAME=AdventureWorksLT
 SET SQL_USERNAME=nachalnikadm
 SET SQL_PASSWORD=
-java -jar ./target/aw_jpa-0.0.1-SNAPSHOT.jar
+java -jar ./target/aw-sb-okta-0.0.1-SNAPSHOT.jar

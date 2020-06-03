@@ -1,0 +1,44 @@
+# before you begin - make sure you're logged in to the azure CLI
+#az login
+
+# ensure you choose the correct azure subscription if you have more than one 
+#az account set -s YourSub
+
+# Create a resource group
+#$resourceGroup = "advwork01"
+#$location = "eastus"
+#az group create --name $resourceGroup --location $location
+
+# create a new Azure container registry
+$registryName = "acradvwork01"
+az acr create -g $resourceGroup -n $registryName --sku Basic --admin-enabled true
+
+# log in to our container registry
+az acr login -n $registryName
+
+# get the login server name
+$loginServer = az acr show -n $registryName --query loginServer --output tsv
+# OR: az acr list -g $resourceGroup -q "[].{acrLoginServer:loginServer}" -o table
+
+# see the images we have - should have samplewebapp:v2
+docker image ls
+
+$dockerHostName="petrveri"
+$dockerImageName="awsdr_jpa_okta"
+
+#Write-Host "dockerHostName: $dockerHostName  dockerImageName: $dockerImageName"
+#Write-Host "loginServer: $loginServer"
+
+# give it a new tag
+docker tag $dockerHostName/$dockerImageName $loginServer/$dockerImageName
+
+$acrImageName=$loginServer+"/"+$dockerImageName+":latest"
+#Write-Host "acrImageName: $acrImageName"
+# push the image to our Azure Container Registry
+docker push $acrImageName
+
+# view the images in our ACR
+az acr repository list -n $registryName -o table
+
+# view the tags for the samplewebapp repository
+az acr repository show-tags -n $registryName --repository $dockerImageName -o table

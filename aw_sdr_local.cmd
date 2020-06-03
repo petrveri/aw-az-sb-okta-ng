@@ -3,4 +3,4 @@ SET SQL_PORT=
 SET SQL_DBNAME=
 SET SQL_USERNAME=
 SET SQL_PASSWORD=
-java -jar ./target/aw-0.0.1-SNAPSHOT.jar
+java -jar ./target/aw-sb-okta-0.0.1-SNAPSHOT.jar

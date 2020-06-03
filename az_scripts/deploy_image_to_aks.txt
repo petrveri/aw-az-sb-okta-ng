@@ -5,7 +5,9 @@
 
 $acrName = az acr show -n $registryName --query name --output tsv
 $loginServer = az acr show -n $registryName --query loginServer --output tsv
-$dockerImageName="awsdr_jpa"
+$dockerImageName="awsdr_jpa_okta"
+#$dockerImageName="awsdr_jpa"
+#$dockerImageName="awsdr_ang"
 $acrImageName=$loginServer+"/"+$dockerImageName+":latest"
 #$aksDnsPrefix = "advworksdns01"
 $aksname = "advworksaks01"
@@ -17,29 +19,40 @@ az aks get-credentials --resource-group=$resourceGroup --name $aksname
 
 kubectl get nodes
 
-$deploymentName="awsdr-jpa"
+$deploymentName="awsdr-jpa-okta"
+#$deploymentName="awsdr-jpa"
+#$deploymentName="awsdr-ang"
+
+kubectl delete deploy/$deploymentName svc/$deploymentName
+
 kubectl run $deploymentName --image=$acrImageName
 
-kubectl expose deployment $deploymentName --type=LoadBalancer --port=8080 --target-port=8080
+#kubectl expose deployment $deploymentName --type=LoadBalancer --port=8080 --target-port=8080
+kubectl expose deployment $deploymentName --type=LoadBalancer --port=4200 --target-port=4200
 
 kubectl create clusterrolebinding kubernetes-dashboard -n kube-system --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard
 
 az aks browse --resource-group=$resourceGroup --name=$aksname
+az aks browse --resource-group="advwork01" --name="advworksaks01"
 
 kubectl get pods -n default
 
 52.170.166.70
+52.170.166.70
 
 
-kubectl get services --namespace=default --name=$aksname
-kubectl get services --namespace=default --name="advworksaks01"
-52.170.160.169
+#kubectl get services --namespace=default --name=$aksname
+#kubectl get services --namespace=default --name="advworksaks01"
 
 
 kubectl get service --output=jsonpath='{.items[*].status.loadBalancer.ingress[0].ip}' --namespace=default
 
-http://52.191.23.190:8080/api/saleslt/customers/29485
-http://52.191.23.190:8080/api/saleslt/customerswithaddress/29485
-http://52.191.23.190:8080/api/saleslt/customers/29485/addresses?jpql=false&nativeQuery=false
+52.224.17.178:8080
+52.190.47.160:4200
+52.224.27.162:8080
 
-kubectl get service --output=jsonpath='{.items[*].status.loadBalancer.ingress[0]}' --namespace=default
+http://52.224.17.178:8080/api/saleslt/customers/29485
+http://52.224.17.178:8080/api/saleslt/customerswithaddress/29485
+http://52.224.17.178:8080/api/saleslt/customers/29485/addresses?jpql=false&nativeQuery=false
+
+http://52.224.27.162:8080/api/saleslt/customers/29485

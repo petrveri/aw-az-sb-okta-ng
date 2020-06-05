@@ -1,1 +1,1 @@
-docker build . -f Dockerfile -t petrveri/awsdr_jpa_okta
+docker build . -f Dockerfile -t petrveri/awsdr_jpa_okta_az

@@ -5,7 +5,8 @@
 
 $acrName = az acr show -n $registryName --query name --output tsv
 $loginServer = az acr show -n $registryName --query loginServer --output tsv
-$dockerImageName="awsdr_jpa_okta"
+$dockerImageName="awsdr_jpa_okta_az"
+#$dockerImageName="awsdr_jpa_okta"
 #$dockerImageName="awsdr_jpa"
 #$dockerImageName="awsdr_ang"
 $acrImageName=$loginServer+"/"+$dockerImageName+":latest"
@@ -19,7 +20,8 @@ az aks get-credentials --resource-group=$resourceGroup --name $aksname
 
 kubectl get nodes
 
-$deploymentName="awsdr-jpa-okta"
+$deploymentName="awsdr-jpa-okta-az"
+#$deploymentName="awsdr-jpa-okta"
 #$deploymentName="awsdr-jpa"
 #$deploymentName="awsdr-ang"
 
@@ -48,11 +50,27 @@ kubectl get pods -n default
 kubectl get service --output=jsonpath='{.items[*].status.loadBalancer.ingress[0].ip}' --namespace=default
 
 52.224.17.178:8080
-52.190.47.160:4200
-52.224.27.162:8080
+52.149.169.187:4200
+52.170.164.60:8080
+52.191.96.12:8080
+52.149.245.243:8080
+40.88.53.217:8080
 
-http://52.224.17.178:8080/api/saleslt/customers/29485
-http://52.224.17.178:8080/api/saleslt/customerswithaddress/29485
-http://52.224.17.178:8080/api/saleslt/customers/29485/addresses?jpql=false&nativeQuery=false
+52.149.169.187 52.224.17.178 52.170.164.60 40.88.53.217
 
-http://52.224.27.162:8080/api/saleslt/customers/29485
+
+http://40.88.53.217/api/saleslt/customers/29485
+http://52.170.164.60:8080/api/saleslt/customerswithaddress/29485
+http://52.170.164.60:8080/api/saleslt/customers/29485/addresses?jpql=false&nativeQuery=true
+
+http://52.191.96.240:8080/api/saleslt/customers/29485
+
+http://52.146.48.225:8080/getSecret
+
+kubectl exec -it awsdr-jpa-okta-az-588c8d46b7-gd86k /bin/bash
+kubectl exec -it nginx-flex-kv "/bin/bash"
+
+
+https://docs.microsoft.com/en-us/azure/developer/java/spring-framework/deploy-spring-boo
+awsdr-jpa-okta-az
+

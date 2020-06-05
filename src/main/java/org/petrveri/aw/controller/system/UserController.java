@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-//@RequestMapping("/api/system/user")
 public class UserController {
     private ClientRegistrationRepository registrations;
 

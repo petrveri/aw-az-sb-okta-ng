@@ -2,7 +2,7 @@
 # jdbc:sqlserver://{host}:{port};database={db};encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
 spring:
   datasource:
-    url: jdbc:sqlserver://${SQL_HOST:localhost}:${SQL_PORT:1433};databaseName=${SQL_DBNAME:AdventureWorksLT2017};
+    url: jdbc:sqlserver://${SQL_HOST:localhost}:${SQL_PORT:1433};databaseName=${SQL_DBNAME:AdventureWorksLT};
     username: ${SQL_USERNAME:sa}
     password: ${SQL_PASSWORD:Password_01}
     driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
@@ -21,9 +21,16 @@ spring:
       client:
         registration:
           okta:
-            client-id: 
-            client-secret: 
+            client-id: ${OKTA_CLIENT_ID:okta_client_id_placeholder}
+            client-secret: ${OKTA_CLIENT_SECRET:okta_client_secret_placeholder}
             scope: openid, email, profile
         provider:
           okta:
-            issuer-uri: 
+            issuer-uri: ${OKTA_ISSUER_URI:okta_issuer_uri_placeholder}
+azure:
+  keyvault:
+    enabled: true
+    uri: ${KEYVAULT_URI:https://advworkkv01.vault.azure.net/}
+    client-id: ${KEYVAULT_CLIENT_ID:keyvault_client_id_placeholder}
+    tenant-id: ${KEYVAULT_TENANT_ID:keyvault_tenant_id_placeholder}
+    client-key: ${KEYVAULT_KEY:keyvault_key_placeholder}

@@ -24,7 +24,7 @@ $loginServer = az acr show -n $registryName --query loginServer --output tsv
 docker image ls
 
 $dockerHostName="petrveri"
-$dockerImageName="awsdr_jpa_okta"
+$dockerImageName="awsdr_jpa_okta_az"
 
 #Write-Host "dockerHostName: $dockerHostName  dockerImageName: $dockerImageName"
 #Write-Host "loginServer: $loginServer"

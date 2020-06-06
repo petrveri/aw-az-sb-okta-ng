@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
@@ -27,6 +28,7 @@ public class UserController {
     }
 
     @GetMapping("/api/system/user")
+    @PreAuthorize("hasAuthority('SCOPE_profile')")
     public ResponseEntity<?> getUser(@AuthenticationPrincipal OAuth2User user) {
         if (user == null) {
             return new ResponseEntity<>("", HttpStatus.OK);
